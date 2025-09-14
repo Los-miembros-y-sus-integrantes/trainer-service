@@ -1,6 +1,8 @@
 package co.analisys.biblioteca.controller.interfaces;
 
 import co.analisys.biblioteca.model.Entrenador;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ public interface EntrenadorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Entrenador agregado exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Entrenador agregarEntrenador(@RequestBody Entrenador entrenador);
     
     @GetMapping
@@ -30,5 +33,6 @@ public interface EntrenadorController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Entrenadores listados exitosamente"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "No se encontraron entrenadores")
     })
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<Entrenador> listarEntrenadores();
 }
