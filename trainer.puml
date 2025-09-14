@@ -1,0 +1,24 @@
+@startuml
+package "TrainerService" {
+  [CirculacionServiceApplication] <<Component>>
+  [DataLoader] <<Component>>
+  [EntrenadorControllerImpl] <<Component>>
+  [EntrenadorServiceImpl] <<Component>>
+  [EntrenadorRepository] <<Component>>
+  [Entrenador] <<Entity>>
+  [H2Database] <<Database>>
+
+  interface EntrenadorController
+  interface EntrenadorService
+
+  [EntrenadorControllerImpl] -left-|> EntrenadorController
+  [EntrenadorServiceImpl] -left-|> EntrenadorService
+
+  [EntrenadorControllerImpl] ..> EntrenadorService : usa
+  [EntrenadorServiceImpl] ..> EntrenadorRepository : usa
+  [EntrenadorRepository] ..> Entrenador : maneja entidad
+  [EntrenadorRepository] ..> [H2Database] : accede
+  [DataLoader] ..> EntrenadorRepository : usa
+  [CirculacionServiceApplication] ..> EntrenadorControllerImpl : inicia
+}
+@enduml

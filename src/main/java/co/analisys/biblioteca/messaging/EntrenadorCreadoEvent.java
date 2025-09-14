@@ -1,17 +1,18 @@
-package co.analisys.biblioteca.model;
+package co.analisys.biblioteca.messaging;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-@Entity
-public class Entrenador {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+import java.io.Serializable;
+
+public class EntrenadorCreadoEvent implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String nombre;
     private String especialidad;
 
+    public EntrenadorCreadoEvent() {}
+
+    public EntrenadorCreadoEvent(Long id, String nombre, String especialidad) {
+        this.id = id; this.nombre = nombre; this.especialidad = especialidad;
+    }
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
