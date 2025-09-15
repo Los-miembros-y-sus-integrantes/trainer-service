@@ -46,16 +46,36 @@ public class KafkaStreamsConfig {
         KStream<String, DatosEntrenamiento> stream = streamsBuilder.stream("datos-entrenamiento", 
             org.apache.kafka.streams.kstream.Consumed.with(Serdes.String(), datosEntrenamientoSerde));
         
+        // Add logging to see what's being processed
+        stream.peek((key, value) -> {
+            System.out.println("Processing training data: key=" + key + ", member=" + 
+                (value.getMiembro() != null ? value.getMiembro().getId() : "null") + 
+                ", duration=" + value.getDuration());
+        });
+        
         stream.groupByKey()
         .windowedBy(TimeWindows.of(Duration.ofDays(7)))
         .aggregate(
-        () -> new ResumenEntrenamiento(),
-        (key, value, aggregate) -> aggregate.actualizar(value),
-        Materialized.as("resumen-entrenamiento-store")
+            () -> new ResumenEntrenamiento(),
+            (key, value, aggregate) -> {
+                ResumenEntrenamiento updated = aggregate.actualizar(value);
+                System.out.println("Aggregating for key: " + key + ", total duration: " + 
+                    updated.getTotalDuration() + ", session count: " + updated.getSessionCount());
+                return updated;
+            },
+            Materialized.<String, ResumenEntrenamiento, org.apache.kafka.streams.state.WindowStore<org.apache.kafka.common.utils.Bytes, byte[]>>as("resumen-entrenamiento-store")
+                .withKeySerde(Serdes.String())
+                .withValueSerde(resumenSerde)
         )
         .toStream()
+        .map((windowedKey, value) -> {
+            // Convert windowed key to simple string key
+            String simpleKey = windowedKey.key() + "-" + windowedKey.window().start() + "-" + windowedKey.window().end();
+            System.out.println("Sending to output topic: key=" + simpleKey + ", value=" + value);
+            return new org.apache.kafka.streams.KeyValue<>(simpleKey, value);
+        })
         .to("resumen-entrenamiento", org.apache.kafka.streams.kstream.Produced.with(
-            org.apache.kafka.streams.kstream.WindowedSerdes.timeWindowedSerdeFrom(String.class),
+            Serdes.String(),
             resumenSerde));
         
         return stream;
