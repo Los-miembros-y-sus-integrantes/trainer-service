@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: biblioteca
+  datasource:
+    url: jdbc:h2:mem:circulaciondb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      group-id: notificacion-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/gimnasio
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+server:
+  port: 8082
+
+keycloak:
+  credentials:
+    secret: ElUJN23QaiWymKEHxLymkUWq8MKcoF9R
+  auth-server-url: http://localhost:8080/auth
+  realm: gimnasio
+  resource: trainer-service
+  public-client: false
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:localhost:8761/eureka/%7D}
+  instance:
+      hostname: ${EUREKA_INSTANCE:favourite-service}
+
+ribbon:
+  eureka:
+    enabled: true
+  NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
