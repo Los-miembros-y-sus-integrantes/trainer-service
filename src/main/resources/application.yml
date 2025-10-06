@@ -1,6 +1,6 @@
 spring:
   application:
-    name: biblioteca
+    name: trainer-service
   datasource:
     url: jdbc:h2:mem:circulaciondb
     driverClassName: org.h2.Driver
@@ -47,14 +47,14 @@ logging:
   level:
     org.springframework.security: DEBUG
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:localhost:8761/eureka/%7D}
-  instance:
-      hostname: ${EUREKA_INSTANCE:trainer-service}
-
-ribbon:
-  eureka:
-    enabled: true
-  NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka}
+#  instance:
+#      hostname: ${EUREKA_INSTANCE:trainer-service}
+#
+#ribbon:
+#  eureka:
+#    enabled: true
+#  NIWSServerListClassName: com.netflix.niws.loadbalancer.DiscoveryEnabledNIWSServerList

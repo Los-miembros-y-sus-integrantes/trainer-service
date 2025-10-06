@@ -10,10 +10,10 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @EnableRabbit
 @EnableFeignClients
-public class CirculacionServiceApplication {
+public class TrainerServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CirculacionServiceApplication.class, args);
+		SpringApplication.run(TrainerServiceApplication.class, args);
 	}
 
 	@Bean
